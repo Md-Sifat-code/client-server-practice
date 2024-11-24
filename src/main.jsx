@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Main_layout from "./Layout/Main_layout";
@@ -13,7 +13,13 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
-        loader: () => fetch("http://localhost:7000/phones"),
+        loader: async () => {
+          const [phones, users] = await Promise.all([
+            fetch("http://localhost:7000/phones").then((res) => res.json()),
+            fetch("http://localhost:7000/users").then((res) => res.json()),
+          ]);
+          return { phones, users };
+        },
       },
     ],
   },
